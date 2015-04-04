@@ -29,21 +29,22 @@ import java.util.WeakHashMap;
 
 import org.hibernate.search.backend.spi.Work;
 import org.hibernate.search.backend.spi.WorkType;
-import org.infinispan.query.backend.SearchWorkCreator;
+import org.infinispan.query.backend.ExtendedSearchWorkCreator;
+import org.infinispan.query.backend.SearchWorkCreatorContext;
 import org.jboss.capedwarf.shared.util.Utils;
 
 /**
  * @author <a href="mailto:ales.justin@jboss.org">Ales Justin</a>
  */
-public class CapedwarfMultiSearchWorkCreator implements SearchWorkCreator<Object> {
-    private Map<ClassLoader, SearchWorkCreator> delegates = new WeakHashMap<>();
+public class CapedwarfMultiSearchWorkCreator implements ExtendedSearchWorkCreator<Object> {
+    private Map<ClassLoader, ExtendedSearchWorkCreator> delegates = new WeakHashMap<>();
 
     @SuppressWarnings("unchecked")
-    protected synchronized SearchWorkCreator<Object>getDelegate() {
+    protected synchronized ExtendedSearchWorkCreator<Object>getDelegate() {
         ClassLoader tccl = Utils.getAppClassLoader();
-        SearchWorkCreator<Object> delegate = delegates.get(tccl);
+        ExtendedSearchWorkCreator<Object> delegate = delegates.get(tccl);
         if (delegate == null) {
-            delegate = Utils.newInstance(SearchWorkCreator.class, tccl, "org.jboss.capedwarf.datastore.CapedwarfSearchWorkCreator");
+            delegate = Utils.newInstance(ExtendedSearchWorkCreator.class, tccl, "org.jboss.capedwarf.datastore.CapedwarfSearchWorkCreator");
             delegates.put(tccl, delegate);
         }
         return delegate;
@@ -55,6 +56,10 @@ public class CapedwarfMultiSearchWorkCreator implements SearchWorkCreator<Object
 
     public Collection<Work> createPerEntityWorks(Object entity, Serializable id, WorkType workType) {
         return getDelegate().createPerEntityWorks(entity, id, workType);
+    }
+
+    public boolean shouldRemove(SearchWorkCreatorContext context) {
+        return getDelegate().shouldRemove(context);
     }
 }
 

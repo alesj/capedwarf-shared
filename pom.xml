@@ -59,7 +59,7 @@
         <!-- JBoss AS -->
         <version.io.undertow>1.2.0.Beta10</version.io.undertow>
         <version.org.jboss.modules.jboss-modules>1.4.2.Final</version.org.jboss.modules.jboss-modules>
-        <version.org.infinispan>7.2.0.Beta1</version.org.infinispan>
+        <version.org.infinispan>7.2.0-SNAPSHOT</version.org.infinispan>
         <version.com.google.guava>18.0</version.com.google.guava>
         <!-- GAE -->
         <version.com.google.gae>1.9.18</version.com.google.gae>
